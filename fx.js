@@ -80,7 +80,12 @@ window.FX = (() => {
     const labelFor = (el) => {
       if (!el || !el.closest) return null;
       if (el.closest(".lightbox")) return el.closest(".lb-nav") ? "" : el.closest("iframe,video,img") ? null : "Close";
-      if (el.closest(".vcard:not(.is-empty), .reel")) return "Play";
+      if (el.closest(".cv-frame")) return null;
+      if (el.closest(".cv-play")) return "Play";
+      if (el.closest(".cph")) return "View";
+      if (el.closest(".case-next")) return "Next";
+      if (el.closest(".vcard:not(.is-empty)")) return "Open";
+      if (el.closest(".reel")) return "Play";
       if (el.closest(".gtile, .wpi, .tile")) return "Open";
       if (el.closest(".ph:not(.is-empty)")) return "View";
       if (el.closest(".wheel-list li")) return "";

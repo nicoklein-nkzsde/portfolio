@@ -31,7 +31,7 @@
   };
   const S = window.Sound || { tick() {}, thump() {}, whoosh() {}, grid() {} };
   const open = (list, i) => { items = list; idx = Math.max(0, i); render(); lb.hidden = false; document.body.classList.add("locked"); S.whoosh(true); };
-  const close = () => { lb.hidden = true; stage.innerHTML = ""; document.body.classList.remove("locked"); S.whoosh(false); };
+  const close = () => { lb.hidden = true; stage.innerHTML = ""; if ($("#case").hidden) document.body.classList.remove("locked"); S.whoosh(false); };
   const step = (d) => { idx = (idx + d + items.length) % items.length; render(); S.tick(1.1); };
   lb.querySelector(".lb-close").onclick = close;
   lb.querySelector(".lb-prev").onclick = () => step(-1);
@@ -78,26 +78,104 @@
     }, { passive: true });
   }
 
-  /* ── Film ── */
-  const vids = (window.VIDEOS || []).map((v) => ({ ...v, video: parseVideo(v.src) }));
-  const wide = vids.filter((v) => !v.vertical), tall = vids.filter((v) => v.vertical);
-  const vcard = (v) => {
-    const poster = v.poster || v.video?.poster || "";
-    return `<button class="vcard${v.vertical ? " is-vertical" : ""}${v.video ? "" : " is-empty"}" type="button" data-i="${vids.indexOf(v)}">
-      ${poster ? `<img src="${esc(poster)}" alt="" loading="lazy" onerror="this.remove()">` : ""}
-      ${v.preview ? `<video class="vprev" src="${esc(v.preview)}" muted loop playsinline preload="none"></video>` : ""}
-      ${v.badge ? `<span class="vbadge mono">${esc(v.badge)}</span>` : ""}
-      <span class="vinfo"><span class="mono">${esc(v.type || "")}</span><span class="vtitle">${esc(v.title)}</span></span>
+  /* ═════════ PROJEKTE ═════════ */
+  const WORKS = (window.WORKS || []).map((w) => {
+    const videos = (w.videos || []).map((v) => ({ ...v, video: parseVideo(v.src) })).filter((v) => v.video);
+    videos.forEach((v) => (v.poster = v.poster || v.video.poster || ""));
+    const photos = (w.photos || []).filter((p) => p.src).map((p) => ({ ...p, cat: p.cat || w.cat || "Foto", caption: w.title, work: w.id }));
+    const cover = w.cover || videos[0]?.poster || photos[0]?.src || "";
+    return { ...w, videos, photos, cover };
+  });
+  const byId = (id) => WORKS.find((w) => w.id === id);
+
+  /* ── Projektseite ── */
+  const caseEl = $("#case"), caseIn = $("#case-inner");
+  let caseOpen = null, casePushed = false;
+  const videoBlock = (v, i) => `
+    <figure class="cv${v.vertical ? " is-vertical" : ""}${v.mitarbeit ? " is-assist" : ""}">
+      <button class="cv-play" type="button" data-v="${i}" aria-label="Video abspielen">
+        ${v.poster ? `<img src="${esc(v.poster)}" alt="" loading="lazy" onerror="this.remove()">` : ""}
+        <span class="vplay" aria-hidden="true">▶</span>
+      </button>
+      ${v.label || v.mitarbeit ? `<figcaption class="cv-cap">${v.mitarbeit ? `<span class="cv-tag mono">Mitarbeit</span>` : ""}${v.label ? `<span class="mono">${esc(v.label)}</span>` : ""}</figcaption>` : ""}
+      ${v.note ? `<p class="cv-note">${esc(v.note)}</p>` : ""}
+    </figure>`;
+  const renderCase = (w) => {
+    const i = WORKS.indexOf(w), next = WORKS[(i + 1) % WORKS.length];
+    const vids = w.videos.length ? `<section class="case-videos${w.videos.every((v) => v.vertical) ? " all-vertical" : ""}">${w.videos.map(videoBlock).join("")}</section>` : "";
+    const phs = w.photos.length ? `<section class="case-photos">${w.photos.map((p, k) => `<button class="cph" type="button" data-p="${k}"><img src="${esc(p.src)}" alt="${esc(p.alt || "")}" loading="lazy"></button>`).join("")}</section>` : "";
+    caseIn.innerHTML = `
+      <div class="case-bar">
+        <button class="case-back mono" type="button">← Zurück</button>
+        <span class="mono case-count">${String(i + 1).padStart(2, "0")} / ${String(WORKS.length).padStart(2, "0")}</span>
+      </div>
+      <header class="case-head">
+        <p class="mono">${esc(w.type || "")}${w.client ? " · " + esc(w.client) : ""}</p>
+        <h2 class="case-title">${esc(w.title)}</h2>
+        ${w.badge ? `<span class="case-badge mono">${esc(w.badge)}</span>` : ""}
+      </header>
+      ${w.videosAfterPhotos ? phs + vids : vids + phs}
+      ${WORKS.length > 1 ? `<button class="case-next" type="button" data-next="${esc(next.id)}">
+        <span class="mono">Nächstes Projekt</span><span class="cn-title">${esc(next.title)} →</span></button>` : ""}`;
+  };
+  const showCase = (w, photo) => {
+    renderCase(w); caseOpen = w;
+    caseEl.hidden = false; caseEl.scrollTop = 0; document.body.classList.add("locked");
+    if (photo != null) setTimeout(() => open(w.photos, photo), 350);
+  };
+  const openCase = (id, opts = {}) => {
+    const w = byId(id); if (!w) return;
+    if (location.hash !== "#p/" + id) { history.pushState(null, "", "#p/" + id); casePushed = true; }
+    S.whoosh(true);
+    if (opts.instant || !window.FX) showCase(w, opts.photo); else window.FX.wipe(() => showCase(w, opts.photo));
+  };
+  const hideCase = () => { caseEl.hidden = true; caseIn.innerHTML = ""; caseOpen = null; if (lb.hidden) document.body.classList.remove("locked"); };
+  const closeCase = () => {
+    if (!caseOpen) return;
+    S.whoosh(false);
+    if (casePushed) { casePushed = false; history.back(); return; } // hashchange erledigt den Rest
+    history.replaceState(null, "", location.pathname + location.search);
+    window.FX ? window.FX.wipe(hideCase) : hideCase();
+  };
+  addEventListener("hashchange", () => {
+    const m = location.hash.match(/^#p\/([\w-]+)/);
+    if (m) { if (caseOpen?.id !== m[1]) { const w = byId(m[1]); if (w) window.FX ? window.FX.wipe(() => showCase(w)) : showCase(w); } }
+    else if (caseOpen) { casePushed = false; window.FX ? window.FX.wipe(hideCase) : hideCase(); }
+  });
+  caseEl.addEventListener("click", (e) => {
+    if (e.target.closest(".case-back")) return closeCase();
+    const nx = e.target.closest(".case-next");
+    if (nx) { const w = byId(nx.dataset.next); history.replaceState(null, "", "#p/" + w.id); S.whoosh(true); return window.FX ? window.FX.wipe(() => showCase(w)) : showCase(w); }
+    const ph = e.target.closest(".cph");
+    if (ph) return open(caseOpen.photos, +ph.dataset.p);
+    const pl = e.target.closest(".cv-play");
+    if (pl) {
+      const v = caseOpen.videos[+pl.dataset.v];
+      if (v.video.ig) return open([{ video: v.video, vertical: v.vertical, caption: caseOpen.title }], 0); // Instagram lieber im Vollbild
+      const frame = document.createElement("div");
+      frame.className = "cv-frame"; frame.innerHTML = player(v.video);
+      pl.replaceWith(frame); S.tick(1.2);
+    }
+  });
+  addEventListener("keydown", (e) => { if (e.key === "Escape" && caseOpen && lb.hidden) closeCase(); });
+  // Direktlink #p/<id> beim Laden
+  { const m = location.hash.match(/^#p\/([\w-]+)/); if (m && byId(m[1])) showCase(byId(m[1])); }
+
+  /* ── Film (Liste): ein Eintrag pro Projekt mit Video ── */
+  const filmWorks = WORKS.filter((w) => w.videos.length);
+  const wide = filmWorks.filter((w) => !w.videos[0].vertical), tall = filmWorks.filter((w) => w.videos[0].vertical);
+  const vcard = (w) => `
+    <button class="vcard${w.videos[0].vertical ? " is-vertical" : ""}" type="button" data-w="${esc(w.id)}">
+      ${w.videos[0].poster ? `<img src="${esc(w.videos[0].poster)}" alt="" loading="lazy" onerror="this.remove()">` : ""}
+      ${w.badge ? `<span class="vbadge mono">${esc(w.badge)}</span>` : ""}
+      <span class="vinfo"><span class="mono">${esc(w.type || "")}${w.photos.length ? ` · ${w.photos.length} Fotos` : ""}</span><span class="vtitle">${esc(w.title)}</span></span>
       <span class="vplay" aria-hidden="true">▶</span>
     </button>`;
-  };
   $("#videos").innerHTML =
     `<div class="vwide">${wide.map(vcard).join("")}</div>` +
     (tall.length ? `<div class="vtall">${tall.map(vcard).join("")}</div>` : "");
-  const playable = vids.filter((v) => v.video);
   $("#videos").addEventListener("click", (e) => {
-    const b = e.target.closest(".vcard"); if (!b) return;
-    const v = vids[+b.dataset.i]; if (v.video) open(playable, playable.indexOf(v));
+    const b = e.target.closest(".vcard"); if (b) openCase(b.dataset.w);
   });
   $("#videos").addEventListener("pointerover", (e) => { const p = e.target.closest(".vcard")?.querySelector(".vprev"); if (p) p.play().catch(() => {}); });
   $("#videos").addEventListener("pointerout", (e) => { const c = e.target.closest(".vcard"); if (c && !c.contains(e.relatedTarget)) c.querySelector(".vprev")?.pause(); });
@@ -121,12 +199,15 @@
     const playA = assists.filter((a) => a.video);
     $("#assist").addEventListener("click", (e) => {
       const b = e.target.closest(".arow"); if (!b) return;
-      const a = assists[+b.dataset.a]; if (a.video) open(playA, playA.indexOf(a));
+      const a = assists[+b.dataset.a];
+      if (a.project && byId(a.project)) openCase(a.project); else if (a.video) open(playA, playA.indexOf(a));
     });
   }
 
   /* ── Foto ── */
-  const photos = window.PHOTOS || [];
+  // alle Fotos aller Projekte, abwechselnd gemischt (damit nicht ein Projekt die Galerie füllt)
+  const photos = [];
+  for (let i = 0, max = Math.max(0, ...WORKS.map((w) => w.photos.length)); i < max; i++) WORKS.forEach((w) => w.photos[i] && photos.push(w.photos[i]));
   const cats = [...new Set(photos.map((p) => p.cat).filter(Boolean))];
   const fEl = $("#photo-filters");
   fEl.innerHTML = cats.length > 1 ? ["Alle", ...cats].map((c, i) => `<button class="chip${i ? "" : " is-active"}" data-cat="${i ? esc(c) : ""}">${esc(c)}</button>`).join("") : "";
@@ -146,8 +227,8 @@
   });
   $("#gallery").addEventListener("click", (e) => {
     const b = e.target.closest(".ph"); if (!b) return;
-    const real = shown.filter((p) => p.src), p = shown[+b.dataset.i];
-    if (p.src) open(real, real.indexOf(p));
+    const p = shown[+b.dataset.i], w = byId(p.work);
+    if (w) openCase(w.id, { photo: w.photos.indexOf(p) }); // Projekt öffnen, Foto gleich groß zeigen
   });
   $("#gallery").addEventListener("load", (e) => {
     const img = e.target; if (img.tagName !== "IMG") return;
@@ -166,18 +247,14 @@
   });
 
   /* ═════════ INDEX: GRID / WHEEL / LIST ═════════ */
-  const groups = [
-    vids.map((v) => ({ title: v.title, kind: v.type || "Film", thumb: v.poster || v.video?.poster || "", act: v.video ? () => open(playable, playable.indexOf(v)) : null })),
-    photos.map((p) => ({ title: p.title || p.alt || p.cat || "Foto", kind: "Foto", thumb: p.src, act: p.src ? () => { const r = photos.filter((x) => x.src); open(r, r.indexOf(p)); } : null })),
-    gfx.map((g, i) => ({ title: g.title || "Grafik", kind: "Grafik", thumb: g.src, act: () => open(gfx, i) })),
-    webs.map((p) => ({ title: p.title, kind: p.cat === "app" ? "Web-App" : "Website", thumb: p.img, href: p.url })),
-  ];
-  // Grid & Wheel zeigen nur Film + Foto (Web & Grafik stehen unten in der Liste).
-  // Nur falls es noch gar keine Film/Foto-Arbeiten gibt, wird Web/Grafik genommen.
-  const main = groups.slice(0, 2).some((g) => g.length) ? groups.slice(0, 2) : groups;
-  // abwechselnd mischen, damit Film und Foto verteilt sind
-  const ALL = [];
-  for (let i = 0, max = Math.max(...main.map((g) => g.length)); i < max; i++) main.forEach((g) => g[i] && ALL.push(g[i]));
+  // Grid & Wheel: ein Eintrag pro Projekt (Web & Grafik stehen unten in der Liste)
+  const ALL = WORKS.map((w) => ({
+    title: w.title,
+    kind: w.videos.length && w.photos.length ? "Film + Foto" : w.videos.length ? "Film" : "Foto",
+    thumb: w.cover,
+    act: () => openCase(w.id),
+  }));
+  if (!ALL.length) webs.forEach((p) => ALL.push({ title: p.title, kind: "Website", thumb: p.img, href: p.url }));
   const activate = (it) => { if (it.act) it.act(); else if (it.href) window.open(it.href, "_blank", "noopener"); };
   const thumbHTML = (it) => it.thumb ? `<img src="${esc(it.thumb)}" alt="" loading="lazy" draggable="false" onerror="this.remove()">` : `<span class="ph-kind mono">${esc(it.kind)}</span>`;
 
@@ -256,7 +333,7 @@
   });
   wp.addEventListener("click", () => activate(ALL[Math.round(wPos)]));
   addEventListener("keydown", (e) => {
-    if (work.dataset.view !== "wheel" || !lb.hidden) return;
+    if (work.dataset.view !== "wheel" || !lb.hidden || caseOpen) return;
     const r = work.getBoundingClientRect(); if (r.bottom < 0 || r.top > innerHeight) return;
     if (e.key === "ArrowDown") { e.preventDefault(); setTarget(Math.round(wTarget) + 1); }
     if (e.key === "ArrowUp") { e.preventDefault(); setTarget(Math.round(wTarget) - 1); }
@@ -309,12 +386,13 @@
   const tick = () => {
     // Grid-Sound: nur bei echter Bewegung (Ziehen oder Ausrollen), nicht beim langsamen Treiben
     let gSpeed = 0;
-    if (inView && lb.hidden && view === "grid" && G) {
+    const free = inView && lb.hidden && !caseOpen;
+    if (free && view === "grid" && G) {
       const stale = drag && performance.now() - drag.t > 70;
       gSpeed = stale ? 0 : Math.hypot(G.vx, G.vy);
     }
     S.grid(gSpeed);
-    if (inView && lb.hidden) {
+    if (free) {
       if (view === "grid" && G) {
         if (!drag) {
           G.ox += G.vx; G.oy += G.vy; G.vx *= 0.95; G.vy *= 0.95;
