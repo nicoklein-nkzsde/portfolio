@@ -36,9 +36,12 @@ window.FX = (() => {
     const loader = $("#loader"), countEl = $("#ld-count"), bar = $("#ld-bar");
     const t0 = performance.now(), MIN = 1500, MAX = 4500;
     let real = 0; // echter Fortschritt 0..1
-    const imgs = [...document.images].filter((i) => !i.loading || i.loading !== "lazy");
-    const tasks = [document.fonts ? document.fonts.ready : Promise.resolve(), new Promise((r) => (document.readyState === "complete" ? r() : addEventListener("load", r, { once: true })))]
-      .concat(imgs.slice(0, 6).map((i) => i.complete ? Promise.resolve() : new Promise((r) => { i.onload = i.onerror = r; })));
+    // Nur auf das Wichtigste warten (Schriften + Hero-Standbild), nicht auf YouTube & Co.
+    const poster = document.querySelector(".hero-poster");
+    const tasks = [
+      document.fonts ? document.fonts.ready : Promise.resolve(),
+      poster && !poster.complete ? new Promise((r) => { poster.addEventListener("load", r, { once: true }); poster.addEventListener("error", r, { once: true }); }) : Promise.resolve(),
+    ];
     let done = 0; tasks.forEach((p) => p.then(() => { done++; real = done / tasks.length; }));
 
     let shown = 0;

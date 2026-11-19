@@ -36,23 +36,20 @@ window.ASSISTS = [
   {
     title: "NovoTech Megawood",
     context: "Entstanden bei Knumox · 4 Drehtage im Zweierteam",
-    role: "Unterstützung am Set, Licht & Aufbau",
+    role: "Unterstützung am Set, Licht & Aufbau · Fotografie",
     credit: "Die Hauptarbeit bei diesem Dreh hat mein Kollege gemacht – ich habe ihn unterstützt.",   // Name gern ergänzen
     src: "https://youtu.be/cfSJ8Xp8BHE",
   },
 ];
 
 window.PHOTOS = [
-  // w/h nur für die Form der Platzhalter
-  { src: "", alt: "", cat: "Portrait", w: 4, h: 5 },
-  { src: "", alt: "", cat: "Automotive", w: 3, h: 2 },
-  { src: "", alt: "", cat: "Event", w: 3, h: 2 },
-  { src: "", alt: "", cat: "Portrait", w: 2, h: 3 },
-  { src: "", alt: "", cat: "Automotive", w: 4, h: 5 },
-  { src: "", alt: "", cat: "Event", w: 2, h: 3 },
-  { src: "", alt: "", cat: "Portrait", w: 3, h: 2 },
-  { src: "", alt: "", cat: "Produkt", w: 1, h: 1 },
-  { src: "", alt: "", cat: "Produkt", w: 4, h: 5 },
+  // title  = Name im Wheel/Grid · caption = Zeile in der Vollbild-Ansicht
+  // cat    = Filter (ab 2 verschiedenen Kategorien erscheinen Filter-Knöpfe)
+  { src: "photos/novotech-stroh.jpg",    title: "NovoTech — Rohstoff",  alt: "Hand lässt Stroh-Fasern in eine Kiste rieseln", cat: "Industrie", caption: "NovoTech Megawood · Knumox", w: 3, h: 2 },
+  { src: "photos/novotech-maschine.jpg", title: "NovoTech — Maschine",  alt: "Druckkopf einer Maschine mit Spiegelung", cat: "Industrie", caption: "NovoTech Megawood · Knumox", w: 3, h: 2 },
+  { src: "photos/novotech-halle.jpg",    title: "NovoTech — Halle",     alt: "Stahlrahmen am Kran in einer Industriehalle", cat: "Industrie", caption: "NovoTech Megawood · Knumox", w: 3, h: 2 },
+  { src: "photos/novotech-schale.jpg",   title: "NovoTech — Labor",     alt: "Siebschale mit feinem Holzmehl", cat: "Industrie", caption: "NovoTech Megawood · Knumox", w: 3, h: 2 },
+  { src: "photos/novotech-fraese.jpg",   title: "NovoTech — Werkstatt", alt: "Mitarbeiter fräst eine Dielenkante", cat: "Industrie", caption: "NovoTech Megawood · Knumox", w: 3, h: 2 },
 ];
 
 window.GRAPHICS = [

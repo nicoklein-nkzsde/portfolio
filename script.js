@@ -23,7 +23,8 @@
     const it = items[idx];
     stage.className = "lb-stage" + (it.vertical ? " is-vertical" : "") + (it.video ? " is-video" : "");
     stage.innerHTML = it.video ? player(it.video) : `<img src="${esc(it.src)}" alt="${esc(it.alt || it.title || "")}">`;
-    cap.textContent = items.length > 1 ? `${String(idx + 1).padStart(2, "0")} / ${String(items.length).padStart(2, "0")}` : "";
+    const count = items.length > 1 ? `${String(idx + 1).padStart(2, "0")} / ${String(items.length).padStart(2, "0")}` : "";
+    cap.textContent = [it.caption, count].filter(Boolean).join("   ·   ");
     lb.querySelectorAll(".lb-nav").forEach((b) => (b.hidden = items.length < 2));
   };
   const S = window.Sound || { tick() {}, thump() {}, whoosh() {}, grid() {} };
@@ -165,13 +166,16 @@
   /* ═════════ INDEX: GRID / WHEEL / LIST ═════════ */
   const groups = [
     vids.map((v) => ({ title: v.title, kind: v.type || "Film", thumb: v.poster || v.video?.poster || "", act: v.video ? () => open(playable, playable.indexOf(v)) : null })),
-    photos.map((p) => ({ title: p.alt || p.cat || "Foto", kind: "Foto", thumb: p.src, act: p.src ? () => { const r = photos.filter((x) => x.src); open(r, r.indexOf(p)); } : null })),
+    photos.map((p) => ({ title: p.title || p.alt || p.cat || "Foto", kind: "Foto", thumb: p.src, act: p.src ? () => { const r = photos.filter((x) => x.src); open(r, r.indexOf(p)); } : null })),
     gfx.map((g, i) => ({ title: g.title || "Grafik", kind: "Grafik", thumb: g.src, act: () => open(gfx, i) })),
     webs.map((p) => ({ title: p.title, kind: p.cat === "app" ? "Web-App" : "Website", thumb: p.img, href: p.url })),
   ];
-  // abwechselnd mischen, damit Film/Foto/Web verteilt sind
+  // Grid & Wheel zeigen nur Film + Foto (Web & Grafik stehen unten in der Liste).
+  // Nur falls es noch gar keine Film/Foto-Arbeiten gibt, wird Web/Grafik genommen.
+  const main = groups.slice(0, 2).some((g) => g.length) ? groups.slice(0, 2) : groups;
+  // abwechselnd mischen, damit Film und Foto verteilt sind
   const ALL = [];
-  for (let i = 0, max = Math.max(...groups.map((g) => g.length)); i < max; i++) groups.forEach((g) => g[i] && ALL.push(g[i]));
+  for (let i = 0, max = Math.max(...main.map((g) => g.length)); i < max; i++) main.forEach((g) => g[i] && ALL.push(g[i]));
   const activate = (it) => { if (it.act) it.act(); else if (it.href) window.open(it.href, "_blank", "noopener"); };
   const thumbHTML = (it) => it.thumb ? `<img src="${esc(it.thumb)}" alt="" loading="lazy" draggable="false" onerror="this.remove()">` : `<span class="ph-kind mono">${esc(it.kind)}</span>`;
 
