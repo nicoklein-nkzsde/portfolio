@@ -8,6 +8,8 @@
     if (!src) return null;
     let m = src.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
     if (m) return { embed: `https://www.youtube-nocookie.com/embed/${m[1]}?autoplay=1&rel=0&modestbranding=1`, poster: `https://i.ytimg.com/vi/${m[1]}/maxresdefault.jpg` };
+    m = src.match(/instagram\.com\/(?:[\w.]+\/)?(?:reel|reels|p)\/([\w-]+)/);
+    if (m) return { embed: `https://www.instagram.com/reel/${m[1]}/embed/`, ig: true };
     m = src.match(/vimeo\.com\/(?:video\/)?(\d+)/);
     if (m) return { embed: `https://player.vimeo.com/video/${m[1]}?autoplay=1&dnt=1&byline=0&title=0` };
     return { file: src };
@@ -21,7 +23,7 @@
   let items = [], idx = 0;
   const render = () => {
     const it = items[idx];
-    stage.className = "lb-stage" + (it.vertical ? " is-vertical" : "") + (it.video ? " is-video" : "");
+    stage.className = "lb-stage" + (it.vertical ? " is-vertical" : "") + (it.video ? " is-video" : "") + (it.video?.ig ? " is-ig" : "");
     stage.innerHTML = it.video ? player(it.video) : `<img src="${esc(it.src)}" alt="${esc(it.alt || it.title || "")}">`;
     const count = items.length > 1 ? `${String(idx + 1).padStart(2, "0")} / ${String(items.length).padStart(2, "0")}` : "";
     cap.textContent = [it.caption, count].filter(Boolean).join("   ·   ");

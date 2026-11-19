@@ -26,7 +26,9 @@ window.VIDEOS = [
   // badge = kleines Label oben links auf der Kachel (optional)
   { title: "Soufian — Kompass", type: "Album-Trailer · DoP", src: "https://youtu.be/M5AAtJu4wNc", badge: "250K+ Views" },
   { title: "Cinematic", type: "Solo-Film · Kamera, Regie & Schauspiel", src: "https://youtu.be/vBig1kVT0Qw", badge: "Nur natürliches Licht" },
-  // Reels (Hochformat) z. B.: { title: "Reel", type: "Social", src: "https://youtube.com/shorts/…", vertical: true },
+  // Reels (Hochformat): YouTube-Shorts- oder Instagram-Reel-Link, vertical: true
+  { title: "Hafty Barbershop — Opening", type: "Reel · Opening-Film", src: "https://www.instagram.com/reel/Df5Sz31glAL/", poster: "media/hafty-opening.jpg", vertical: true },
+  { title: "Hafty — Behind the Chair", type: "Reel · Barber bei der Arbeit", src: "https://www.instagram.com/reel/DZ0dgrLRwWG/", poster: "media/hafty-barber.jpg", vertical: true },
 ];
 
 /* MITARBEIT — Projekte, bei denen du nur geholfen hast.
