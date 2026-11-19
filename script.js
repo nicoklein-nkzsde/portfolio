@@ -26,9 +26,10 @@
     cap.textContent = items.length > 1 ? `${String(idx + 1).padStart(2, "0")} / ${String(items.length).padStart(2, "0")}` : "";
     lb.querySelectorAll(".lb-nav").forEach((b) => (b.hidden = items.length < 2));
   };
-  const open = (list, i) => { items = list; idx = Math.max(0, i); render(); lb.hidden = false; document.body.classList.add("locked"); };
-  const close = () => { lb.hidden = true; stage.innerHTML = ""; document.body.classList.remove("locked"); };
-  const step = (d) => { idx = (idx + d + items.length) % items.length; render(); };
+  const S = window.Sound || { tick() {}, thump() {}, whoosh() {}, grid() {} };
+  const open = (list, i) => { items = list; idx = Math.max(0, i); render(); lb.hidden = false; document.body.classList.add("locked"); S.whoosh(true); };
+  const close = () => { lb.hidden = true; stage.innerHTML = ""; document.body.classList.remove("locked"); S.whoosh(false); };
+  const step = (d) => { idx = (idx + d + items.length) % items.length; render(); S.tick(1.1); };
   lb.querySelector(".lb-close").onclick = close;
   lb.querySelector(".lb-prev").onclick = () => step(-1);
   lb.querySelector(".lb-next").onclick = () => step(1);
@@ -182,7 +183,7 @@
     });
   };
   let drag = null, moved = 0;
-  vg.addEventListener("pointerdown", (e) => { drag = { x: e.clientX, y: e.clientY, t: performance.now() }; moved = 0; G.vx = G.vy = 0; vg.setPointerCapture(e.pointerId); vg.classList.add("dragging"); });
+  vg.addEventListener("pointerdown", (e) => { drag = { x: e.clientX, y: e.clientY, t: performance.now() }; moved = 0; G.vx = G.vy = 0; S.tick(0.6, 0.5); vg.setPointerCapture(e.pointerId); vg.classList.add("dragging"); });
   vg.addEventListener("pointermove", (e) => {
     if (!drag) return;
     const dx = e.clientX - drag.x, dy = e.clientY - drag.y, now = performance.now(), dt = Math.max(1, now - drag.t);
@@ -244,6 +245,7 @@
     });
     const act = Math.round(wPos);
     if (act !== wActive) {
+      if (wActive !== -1) (act === 0 || act === ALL.length - 1) ? (S.tick(0.8), S.thump()) : S.tick();
       wItems[wActive]?.classList.remove("on"); wPrev[wActive]?.classList.remove("on");
       wItems[act]?.classList.add("on"); wPrev[act]?.classList.add("on"); wActive = act;
     }
@@ -260,6 +262,7 @@
   };
   sw.addEventListener("click", (e) => {
     const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.view !== view) S.tick(1.4);
     setView(b.dataset.view, true);
     work.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
   });
@@ -274,6 +277,13 @@
   let inView = true;
   new IntersectionObserver(([e]) => (inView = e.isIntersecting)).observe(work);
   const tick = () => {
+    // Grid-Sound: nur bei echter Bewegung (Ziehen oder Ausrollen), nicht beim langsamen Treiben
+    let gSpeed = 0;
+    if (inView && lb.hidden && view === "grid" && G) {
+      const stale = drag && performance.now() - drag.t > 70;
+      gSpeed = stale ? 0 : Math.hypot(G.vx, G.vy);
+    }
+    S.grid(gSpeed);
     if (inView && lb.hidden) {
       if (view === "grid" && G) {
         if (!drag) {
@@ -291,6 +301,15 @@
     requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
+
+  /* ── Sound-Schalter ── */
+  const snd = $("#snd");
+  const showSnd = (on) => { snd.classList.toggle("on", on); snd.setAttribute("aria-pressed", String(on)); snd.title = on ? "Sound aus" : "Sound an"; };
+  if (window.Sound) {
+    showSnd(window.Sound.enabled);
+    snd.addEventListener("click", () => window.Sound.setEnabled(!window.Sound.enabled));
+    document.addEventListener("kaizo-sound", (e) => showSnd(e.detail));
+  } else snd.hidden = true;
 
   $("#year").textContent = new Date().getFullYear();
 
