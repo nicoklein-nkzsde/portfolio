@@ -92,17 +92,24 @@
   const caseEl = $("#case"), caseIn = $("#case-inner");
   let caseOpen = null, casePushed = false;
   const videoBlock = (v, i) => `
-    <figure class="cv${v.vertical ? " is-vertical" : ""}${v.mitarbeit ? " is-assist" : ""}">
-      <button class="cv-play" type="button" data-v="${i}" aria-label="Video abspielen">
-        ${v.poster ? `<img src="${esc(v.poster)}" alt="" loading="lazy" onerror="this.remove()">` : ""}
-        <span class="vplay" aria-hidden="true">▶</span>
+    <figure class="cv${v.vertical ? " is-vertical" : ""}${v.mitarbeit ? " is-assist" : ""}${v.loop ? " is-loop" : ""}">
+      <button class="cv-play" type="button" data-v="${i}" aria-label="Video abspielen"${v.ratio ? ` style="aspect-ratio:${esc(v.ratio)}"` : ""}>
+        ${v.loop && v.video.file
+          ? `<video src="${esc(v.video.file)}" muted loop playsinline autoplay preload="metadata"${v.poster ? ` poster="${esc(v.poster)}"` : ""}></video>`
+          : v.poster ? `<img src="${esc(v.poster)}" alt="" loading="lazy" onerror="this.remove()">`
+          : v.video.file ? `<video src="${esc(v.video.file)}#t=0.5" muted playsinline preload="metadata"></video>` : ""}
+        <span class="vplay" aria-hidden="true">${v.loop ? "⤢" : "▶"}</span>
       </button>
       ${v.label || v.mitarbeit ? `<figcaption class="cv-cap">${v.mitarbeit ? `<span class="cv-tag mono">Mitarbeit</span>` : ""}${v.label ? `<span class="mono">${esc(v.label)}</span>` : ""}</figcaption>` : ""}
       ${v.note ? `<p class="cv-note">${esc(v.note)}</p>` : ""}
     </figure>`;
   const renderCase = (w) => {
     const i = WORKS.indexOf(w), next = WORKS[(i + 1) % WORKS.length];
-    const vids = w.videos.length ? `<section class="case-videos${w.videos.every((v) => v.vertical) ? " all-vertical" : ""}">${w.videos.map(videoBlock).join("")}</section>` : "";
+    // Hauptvideos oben, kurze Loop-Clips darunter in eigenem Raster
+    const mains = w.videos.map((v, k) => [v, k]).filter(([v]) => !v.loop), loops = w.videos.map((v, k) => [v, k]).filter(([v]) => v.loop);
+    const vids =
+      (mains.length ? `<section class="case-videos${mains.every(([v]) => v.vertical) ? " all-vertical" : ""}">${mains.map(([v, k]) => videoBlock(v, k)).join("")}</section>` : "") +
+      (loops.length ? `<section class="case-loops">${loops.map(([v, k]) => videoBlock(v, k)).join("")}</section>` : "");
     const phs = w.photos.length ? `<section class="case-photos">${w.photos.map((p, k) => `<button class="cph" type="button" data-p="${k}"><img src="${esc(p.src)}" alt="${esc(p.alt || "")}" loading="lazy"></button>`).join("")}</section>` : "";
     caseIn.innerHTML = `
       <div class="case-bar">
@@ -152,6 +159,10 @@
     if (pl) {
       const v = caseOpen.videos[+pl.dataset.v];
       if (v.video.ig) return open([{ video: v.video, vertical: v.vertical, caption: caseOpen.title }], 0); // Instagram lieber im Vollbild
+      if (v.loop) { // Loop-Clips: groß mit Ton, alle Clips des Projekts durchblätterbar
+        const loops = caseOpen.videos.filter((x) => x.loop).map((x) => ({ video: x.video, vertical: x.vertical, caption: caseOpen.title }));
+        return open(loops, caseOpen.videos.filter((x) => x.loop).indexOf(v));
+      }
       const frame = document.createElement("div");
       frame.className = "cv-frame"; frame.innerHTML = player(v.video);
       pl.replaceWith(frame); S.tick(1.2);
@@ -162,11 +173,13 @@
   { const m = location.hash.match(/^#p\/([\w-]+)/); if (m && byId(m[1])) showCase(byId(m[1])); }
 
   /* ── Film (Liste): ein Eintrag pro Projekt mit Video ── */
-  const filmWorks = WORKS.filter((w) => w.videos.length);
-  const wide = filmWorks.filter((w) => !w.videos[0].vertical), tall = filmWorks.filter((w) => w.videos[0].vertical);
+  // Projekte mit "richtigem" Film (nicht nur kurze Loop-Clips); Hauptvideo = erstes Nicht-Loop-Video
+  const mainVid = (w) => w.videos.find((v) => !v.loop);
+  const filmWorks = WORKS.filter(mainVid);
+  const wide = filmWorks.filter((w) => !mainVid(w).vertical), tall = filmWorks.filter((w) => mainVid(w).vertical);
   const vcard = (w) => `
-    <button class="vcard${w.videos[0].vertical ? " is-vertical" : ""}" type="button" data-w="${esc(w.id)}">
-      ${w.videos[0].poster ? `<img src="${esc(w.videos[0].poster)}" alt="" loading="lazy" onerror="this.remove()">` : ""}
+    <button class="vcard${mainVid(w).vertical ? " is-vertical" : ""}" type="button" data-w="${esc(w.id)}">
+      ${mainVid(w).poster ? `<img src="${esc(mainVid(w).poster)}" alt="" loading="lazy" onerror="this.remove()">` : ""}
       ${w.badge ? `<span class="vbadge mono">${esc(w.badge)}</span>` : ""}
       <span class="vinfo"><span class="mono">${esc(w.type || "")}${w.photos.length ? ` · ${w.photos.length} Fotos` : ""}</span><span class="vtitle">${esc(w.title)}</span></span>
       <span class="vplay" aria-hidden="true">▶</span>

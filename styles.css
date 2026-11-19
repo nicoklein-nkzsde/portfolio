@@ -237,11 +237,14 @@ main{padding:0 var(--pad)}
 @keyframes caseIn{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
 
 .case-videos{display:grid;gap:var(--gap);margin-bottom:var(--gap)}
-.case-videos.all-vertical{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),340px));justify-content:start}
+.case-videos.all-vertical{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),380px));justify-content:start}
 .cv{margin:0;display:flex;flex-direction:column;gap:10px}
 .cv-play,.cv-frame{position:relative;display:block;width:100%;aspect-ratio:16/9;overflow:hidden;background:var(--tile)}
 .cv.is-vertical .cv-play,.cv.is-vertical .cv-frame{aspect-ratio:9/16}
-.cv-play img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease),filter .5s}
+.cv-play img,.cv-play video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease),filter .5s}
+.cv-play:hover video{transform:scale(1.03)}
+.cv.is-loop .vplay{opacity:0;transform:scale(.8);width:52px;height:52px;margin:-26px 0 0 -26px;font-size:16px;transition:opacity .3s,transform .5s var(--ease)}
+.cv.is-loop .cv-play:hover .vplay{opacity:1;transform:none}
 .cv-play:hover img{transform:scale(1.03)}
 .cv-play .vplay{opacity:1;transform:none;width:84px;height:84px;margin:-42px 0 0 -42px;font-size:18px}
 .cv-play:hover .vplay{background:rgba(242,242,240,.9);color:var(--bg)}
@@ -250,7 +253,9 @@ main{padding:0 var(--pad)}
 .cv-tag{color:var(--t1);padding:3px 8px;border:1px solid rgba(242,242,240,.35);border-radius:4px}
 .cv.is-assist .cv-play img{filter:grayscale(.5) brightness(.75)}
 .cv-note{max-width:70ch;color:var(--t2);font-size:14px;line-height:1.6}
-.case-photos + .case-videos{margin-top:clamp(40px,8vh,80px)}
+.case-photos + .case-videos,.case-photos + .case-loops{margin-top:clamp(40px,8vh,80px)}
+.case-loops{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:var(--gap);margin-bottom:var(--gap);align-items:start}
+.case:not([hidden]) .case-loops{animation:caseIn 1s var(--ease) .25s both}
 
 .case-photos{columns:2 340px;column-gap:var(--gap)}
 .cph{display:block;width:100%;margin-bottom:var(--gap);overflow:hidden;background:var(--tile);break-inside:avoid}
@@ -307,7 +312,8 @@ main{padding:0 var(--pad)}
 .lb-stage{width:min(92vw,1600px);height:min(84vh,900px);display:grid;place-items:center}
 .lb-stage img{max-width:100%;max-height:100%;object-fit:contain;animation:fade .4s both}
 .lb-stage.is-video iframe,.lb-stage.is-video video{width:100%;aspect-ratio:16/9;max-height:100%;border:0;background:#000}
-.lb-stage.is-vertical iframe,.lb-stage.is-vertical video{width:auto;height:100%;aspect-ratio:9/16}
+.lb-stage.is-vertical iframe{width:auto;height:100%;aspect-ratio:9/16}
+.lb-stage.is-vertical video{width:auto;height:100%;max-width:100%;aspect-ratio:auto}
 /* Instagram-Player bringt Kopf- und Fußzeile mit -> etwas breiter, weißer Hintergrund vermeiden */
 .lb-stage.is-ig iframe{width:min(92vw,440px);height:100%;aspect-ratio:auto;background:#000;border-radius:8px}
 .lb-close{position:absolute;top:18px;right:var(--pad);font-size:18px;color:var(--t2);padding:8px}
