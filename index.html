@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nico Klein — KaizoStudios</title>
+<meta name="description" content="Nico Klein aka KaizoStudios — Foto & Film aus Gießen & Frankfurt.">
+<meta property="og:title" content="Nico Klein — KaizoStudios">
+<meta property="og:description" content="Foto & Film.">
+<meta name="theme-color" content="#050506">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23050506'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='16' font-weight='700' text-anchor='middle' fill='%23ffffff'%3EK%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="nav">
+  <a href="#top" class="logo">KAIZO<span>STUDIOS</span></a>
+  <nav>
+    <a href="#work">Arbeiten</a>
+    <a href="#kontakt">Kontakt</a>
+  </nav>
+</header>
+
+<section class="hero" id="top">
+  <div class="hero-media" id="hero-media" aria-hidden="true"></div>
+  <div class="hero-shade" aria-hidden="true"></div>
+  <h1 class="wordmark" aria-label="KaizoStudios">
+    <span class="wm-line">KAIZO</span>
+    <span class="wm-line wm-outline">STUDIOS</span>
+  </h1>
+  <div class="hero-foot">
+    <span class="mono">Nico Klein — Foto &amp; Film</span>
+    <button class="reel" id="reel-btn" type="button"><span class="reel-dot">▶</span><span class="mono">Showreel</span></button>
+    <span class="mono hide-sm" id="hero-credit">Gießen / Frankfurt</span>
+  </div>
+</section>
+
+<section id="work" class="work" data-view="grid">
+  <div class="view view-grid" id="vgrid" aria-label="Arbeiten – Raster"><div class="plane" id="plane"></div></div>
+  <div class="view view-wheel" id="vwheel" aria-label="Arbeiten – Rad">
+    <div class="wheel-preview" id="wheel-preview"></div>
+    <ul class="wheel-list" id="wheel-list"></ul>
+  </div>
+<main class="view view-list">
+  <section id="film" class="section">
+    <h2 class="label"><span>01</span> Film</h2>
+    <div class="videos" id="videos"></div>
+  </section>
+
+  <section id="foto" class="section">
+    <div class="label-row">
+      <h2 class="label"><span>02</span> Foto</h2>
+      <div class="filters" id="photo-filters"></div>
+    </div>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <section id="mehr" class="section">
+    <h2 class="label"><span>03</span> Web &amp; Grafik</h2>
+    <div class="more" id="more"></div>
+  </section>
+</main>
+</section>
+
+<div class="switch" id="switch" role="tablist" aria-label="Ansicht">
+  <button type="button" data-view="list">List</button>
+  <button type="button" data-view="wheel">Wheel</button>
+  <button type="button" data-view="grid">Grid</button>
+</div>
+
+<section id="kontakt" class="contact">
+  <p class="mono">Anfragen</p>
+  <a class="contact-mail" href="mailto:nicoklein@nkzs.de">nicoklein@nkzs.de</a>
+  <div class="contact-links mono">
+    <a href="https://www.instagram.com/kaizoprod/" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://nkzs.de/" target="_blank" rel="noopener">nkzs.de</a>
+  </div>
+  <footer class="footer mono">© <span id="year">2026</span> Nico Klein</footer>
+</section>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lb-close" type="button" aria-label="Schließen">✕</button>
+  <button class="lb-nav lb-prev" type="button" aria-label="Zurück">←</button>
+  <div class="lb-stage" id="lb-stage"></div>
+  <button class="lb-nav lb-next" type="button" aria-label="Weiter">→</button>
+  <div class="lb-cap mono" id="lb-cap"></div>
+</div>
+
+<script src="media.js"></script>
+<script src="projects.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
