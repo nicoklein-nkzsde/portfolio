@@ -262,9 +262,10 @@
   };
   sw.addEventListener("click", (e) => {
     const b = e.target.closest("button"); if (!b) return;
-    if (b.dataset.view !== view) S.tick(1.4);
-    setView(b.dataset.view, true);
-    work.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
+    if (b.dataset.view === view) return;
+    S.tick(1.4);
+    const go = () => { setView(b.dataset.view, true); work.scrollIntoView({ behavior: "auto" }); };
+    window.FX ? window.FX.wipe(go) : go();
   });
   let saved = null; try { saved = localStorage.getItem("kaizo-view"); } catch {}
   setView(saved || (isMobile() ? "wheel" : "grid"));
