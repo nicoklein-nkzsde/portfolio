@@ -109,6 +109,7 @@
         <span class="athumb">${poster ? `<img src="${esc(poster)}" alt="" loading="lazy" onerror="this.remove()">` : ""}<span class="vplay" aria-hidden="true">▶</span></span>
         <span class="atext">
           <span class="atitle">${esc(a.title)}</span>
+          ${a.context ? `<span class="acontext mono">${esc(a.context)}</span>` : ""}
           <span class="arole"><span class="mono">Meine Rolle</span> ${esc(a.role)}</span>
           ${a.credit ? `<span class="acredit mono">${esc(a.credit)}</span>` : ""}
         </span>

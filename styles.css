@@ -122,7 +122,8 @@ main{padding:0 var(--pad)}
 .atitle{font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:clamp(16px,1.6vw,22px)}
 .arole{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:15px}
 .arole .mono{padding:3px 7px;border:1px solid var(--line);border-radius:4px;font-size:9.5px}
-.acredit{color:var(--t3);text-transform:none;letter-spacing:.04em}
+.acredit{color:var(--t2);text-transform:none;letter-spacing:.02em;font-size:12px;line-height:1.5}
+.acontext{color:var(--t3);font-size:10px;margin-top:-2px}
 @media (max-width:560px){.arow{grid-template-columns:1fr}}
 
 /* FOTO — Masonry */

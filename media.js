@@ -35,8 +35,9 @@ window.VIDEOS = [
 window.ASSISTS = [
   {
     title: "NovoTech Megawood",
-    role: "Assistenz & Lichtaufbau",
-    credit: "Kamera, Regie & Schnitt: Kollege",   // <- hier gern seinen Namen eintragen
+    context: "Entstanden bei Knumox · 4 Drehtage im Zweierteam",
+    role: "Unterstützung am Set, Licht & Aufbau",
+    credit: "Die Hauptarbeit bei diesem Dreh hat mein Kollege gemacht – ich habe ihn unterstützt.",   // Name gern ergänzen
     src: "https://youtu.be/cfSJ8Xp8BHE",
   },
 ];
