@@ -25,13 +25,20 @@ window.SHOWREEL = {
 window.VIDEOS = [
   // badge = kleines Label oben links auf der Kachel (optional)
   { title: "Soufian — Kompass", type: "Album-Trailer · DoP", src: "https://youtu.be/M5AAtJu4wNc", badge: "250K+ Views" },
-  { title: "Imagefilm", type: "Imagefilm", src: "", poster: "" },
-  { title: "FLASCHENGEIST", type: "Musikvideo", src: "", poster: "" },
-  { title: "HoneyDaBandit — MIB", type: "Musikvideo", src: "", poster: "" },
-  { title: "Commercial", type: "Commercial", src: "", poster: "" },
-  { title: "Reel", type: "Social", src: "", poster: "", vertical: true },
-  { title: "Reel", type: "Social", src: "", poster: "", vertical: true },
-  { title: "Reel", type: "Social", src: "", poster: "", vertical: true },
+  { title: "Cinematic", type: "Solo-Film · Kamera, Regie & Schauspiel", src: "https://youtu.be/vBig1kVT0Qw", badge: "Nur natürliches Licht" },
+  // Reels (Hochformat) z. B.: { title: "Reel", type: "Social", src: "https://youtube.com/shorts/…", vertical: true },
+];
+
+/* MITARBEIT — Projekte, bei denen du nur geholfen hast.
+   Erscheinen NUR ganz unten im eigenen Bereich, klar mit deiner Rolle markiert,
+   nicht im Grid/Wheel und nicht bei deinen eigenen Filmen. */
+window.ASSISTS = [
+  {
+    title: "NovoTech Megawood",
+    role: "Assistenz & Lichtaufbau",
+    credit: "Kamera, Regie & Schnitt: Kollege",   // <- hier gern seinen Namen eintragen
+    src: "https://youtu.be/cfSJ8Xp8BHE",
+  },
 ];
 
 window.PHOTOS = [

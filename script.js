@@ -99,6 +99,28 @@
   $("#videos").addEventListener("pointerover", (e) => { const p = e.target.closest(".vcard")?.querySelector(".vprev"); if (p) p.play().catch(() => {}); });
   $("#videos").addEventListener("pointerout", (e) => { const c = e.target.closest(".vcard"); if (c && !c.contains(e.relatedTarget)) c.querySelector(".vprev")?.pause(); });
 
+  /* ── Mitarbeit (nur unten, klar markiert) ── */
+  const assists = (window.ASSISTS || []).map((a) => ({ ...a, video: parseVideo(a.src) }));
+  if (assists.length) {
+    $("#mitarbeit").hidden = false;
+    $("#assist").innerHTML = assists.map((a, i) => {
+      const poster = a.poster || a.video?.poster || "";
+      return `<button class="arow" type="button" data-a="${i}">
+        <span class="athumb">${poster ? `<img src="${esc(poster)}" alt="" loading="lazy" onerror="this.remove()">` : ""}<span class="vplay" aria-hidden="true">▶</span></span>
+        <span class="atext">
+          <span class="atitle">${esc(a.title)}</span>
+          <span class="arole"><span class="mono">Meine Rolle</span> ${esc(a.role)}</span>
+          ${a.credit ? `<span class="acredit mono">${esc(a.credit)}</span>` : ""}
+        </span>
+      </button>`;
+    }).join("");
+    const playA = assists.filter((a) => a.video);
+    $("#assist").addEventListener("click", (e) => {
+      const b = e.target.closest(".arow"); if (!b) return;
+      const a = assists[+b.dataset.a]; if (a.video) open(playA, playA.indexOf(a));
+    });
+  }
+
   /* ── Foto ── */
   const photos = window.PHOTOS || [];
   const cats = [...new Set(photos.map((p) => p.cat).filter(Boolean))];
