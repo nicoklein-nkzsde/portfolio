@@ -267,6 +267,30 @@ main{padding:0 var(--pad)}
 .cn-title{font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:900;text-transform:uppercase;font-size:clamp(26px,5vw,80px);line-height:.95;transition:font-weight .55s var(--ease)}
 .case-next:hover .cn-title{font-weight:200}
 
+/* ═════════ ACCOUNT-LEISTE (Instagram / YouTube) ═════════ */
+.src-bar{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;padding:10px 0 12px;font-size:14px}
+.src-acc{display:flex;align-items:center;gap:10px;color:var(--t1)}
+.src-av{position:relative;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;padding:2px;flex:none;
+  background:conic-gradient(from 200deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5,#feda75)}
+.src-av.is-yt{background:#ff0033}
+.src-av img,.src-av span{width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--bg);background:#222;
+  display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--t1)}
+.src-name{font-weight:600;letter-spacing:-.01em}
+.src-acc[href]:hover .src-name{text-decoration:underline}
+.src-ok{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;background:#3897f0;color:#fff;font-size:9px;font-style:normal;vertical-align:1px;margin-left:2px}
+.src-with{color:var(--t2);font-size:13px}
+.src-with a{color:var(--t1)}
+.src-with a:hover{text-decoration:underline}
+.src-link{margin-left:auto;color:var(--t2);transition:color .2s}
+.src-link:hover{color:var(--t1)}
+.case-group + .case-group{margin-top:clamp(28px,5vh,48px)}
+.case-group .case-photos{margin-top:2px}
+/* im Vollbild oben links */
+.lb-src{position:absolute;top:12px;left:var(--pad);right:80px;z-index:2}
+.lb-src .src-bar{padding:6px 0}
+.lb-src .src-link{margin-left:12px}
+@media (max-width:640px){.src-link{margin-left:0;width:100%}.lb-src .src-link{width:auto}}
+
 /* ═════════ LADEBILDSCHIRM ═════════ */
 .loader{display:none}
 .is-loading body{overflow:hidden}

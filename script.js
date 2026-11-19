@@ -28,7 +28,17 @@
     const count = items.length > 1 ? `${String(idx + 1).padStart(2, "0")} / ${String(items.length).padStart(2, "0")}` : "";
     cap.textContent = [it.caption, count].filter(Boolean).join("   ·   ");
     lb.querySelectorAll(".lb-nav").forEach((b) => (b.hidden = items.length < 2));
+    lbSrc.innerHTML = it.srcInfo && window.__srcBar ? window.__srcBar(it.srcInfo) : "";
   };
+  const lbSrc = $("#lb-src");
+  // Doppelklick / Doppeltipp aufs Bild im Vollbild = Original-Post öffnen
+  const lbPost = () => { const si = items[idx]?.srcInfo; if (si?.post) window.open(si.post, "_blank", "noopener"); };
+  stage.addEventListener("dblclick", (e) => { if (e.target.tagName === "IMG") lbPost(); });
+  let lastTap = 0;
+  stage.addEventListener("touchend", (e) => {
+    if (e.target.tagName !== "IMG") return;
+    const now = Date.now(); if (now - lastTap < 300) { e.preventDefault(); lbPost(); lastTap = 0; } else lastTap = now;
+  });
   const S = window.Sound || { tick() {}, thump() {}, whoosh() {}, grid() {} };
   const open = (list, i) => { items = list; idx = Math.max(0, i); render(); lb.hidden = false; document.body.classList.add("locked"); S.whoosh(true); };
   const close = () => { lb.hidden = true; stage.innerHTML = ""; if ($("#case").hidden) document.body.classList.remove("locked"); S.whoosh(false); };
@@ -79,10 +89,27 @@
   }
 
   /* ═════════ PROJEKTE ═════════ */
+  // Quelle eines Fotos/Videos: wer hat's gepostet, Link zum Original-Post
+  const ACC = window.ACCOUNTS || {};
+  const mkSrc = (by, post, withs) => {
+    if (!by && !post) return null;
+    const a = ACC[by] || (by ? { name: by } : null);
+    const platform = a?.platform || (/youtu/.test(post || "") ? "youtube" : "instagram");
+    return {
+      name: a?.name, avatar: a?.avatar, verified: a?.verified, platform, post,
+      profile: a ? (platform === "youtube" ? `https://www.youtube.com/@${a.name}` : `https://www.instagram.com/${a.name}/`) : null,
+      with: (withs || []).map((k) => ACC[k]?.name || k),
+    };
+  };
   const WORKS = (window.WORKS || []).map((w) => {
     const videos = (w.videos || []).map((v) => ({ ...v, video: parseVideo(v.src) })).filter((v) => v.video);
-    videos.forEach((v) => (v.poster = v.poster || v.video.poster || ""));
-    const photos = (w.photos || []).filter((p) => p.src).map((p) => ({ ...p, cat: p.cat || w.cat || "Foto", caption: w.title, work: w.id }));
+    videos.forEach((v) => {
+      v.poster = v.poster || v.video.poster || "";
+      v.srcInfo = v.loop ? mkSrc(v.by || w.by, v.post || w.post, v.with || w.with)
+                         : mkSrc(v.by, v.post || (/^https?:/.test(v.src) ? v.src : null), v.with);
+    });
+    const photos = (w.photos || []).filter((p) => p.src).map((p) => ({ ...p, cat: p.cat || w.cat || "Foto", caption: w.title, work: w.id,
+      srcInfo: mkSrc(p.by || w.by, p.post || w.post, p.with || w.with) }));
     const cover = w.cover || videos[0]?.poster || photos[0]?.src || "";
     return { ...w, videos, photos, cover };
   });
@@ -91,8 +118,25 @@
   /* ── Projektseite ── */
   const caseEl = $("#case"), caseIn = $("#case-inner");
   let caseOpen = null, casePushed = false;
+  // Account-Leiste wie bei Instagram/YouTube
+  const srcBar = (si) => {
+    if (!si) return "";
+    const ini = (si.name || "?").replace(/[^a-z0-9]/gi, "").charAt(0).toUpperCase();
+    const av = si.avatar ? `<img src="${esc(si.avatar)}" alt="">` : `<span>${esc(ini)}</span>`;
+    const label = si.platform === "youtube" ? "Auf YouTube ansehen" : "Auf Instagram ansehen";
+    return `<div class="src-bar">
+      <a class="src-acc" ${si.profile ? `href="${esc(si.profile)}" target="_blank" rel="noopener"` : ""}>
+        <span class="src-av${si.platform === "youtube" ? " is-yt" : ""}">${av}</span>
+        <span class="src-name">${esc(si.name || "")}${si.verified ? ` <i class="src-ok" aria-label="verifiziert">✓</i>` : ""}</span>
+      </a>
+      ${si.with.length ? `<span class="src-with">mit ${si.with.map((n) => `<a href="https://www.instagram.com/${esc(n)}/" target="_blank" rel="noopener">${esc(n)}</a>`).join(", ")}</span>` : ""}
+      ${si.post ? `<a class="src-link mono" href="${esc(si.post)}" target="_blank" rel="noopener">${label} ↗</a>` : ""}
+    </div>`;
+  };
+  window.__srcBar = srcBar; // auch fürs Vollbild
   const videoBlock = (v, i) => `
     <figure class="cv${v.vertical ? " is-vertical" : ""}${v.mitarbeit ? " is-assist" : ""}${v.loop ? " is-loop" : ""}">
+      ${v.loop ? "" : srcBar(v.srcInfo)}
       <button class="cv-play" type="button" data-v="${i}" aria-label="Video abspielen"${v.ratio ? ` style="aspect-ratio:${esc(v.ratio)}"` : ""}>
         ${v.loop && v.video.file
           ? `<video src="${esc(v.video.file)}" muted loop playsinline autoplay preload="metadata"${v.poster ? ` poster="${esc(v.poster)}"` : ""}></video>`
@@ -109,8 +153,16 @@
     const mains = w.videos.map((v, k) => [v, k]).filter(([v]) => !v.loop), loops = w.videos.map((v, k) => [v, k]).filter(([v]) => v.loop);
     const vids =
       (mains.length ? `<section class="case-videos${mains.every(([v]) => v.vertical) ? " all-vertical" : ""}">${mains.map(([v, k]) => videoBlock(v, k)).join("")}</section>` : "") +
-      (loops.length ? `<section class="case-loops">${loops.map(([v, k]) => videoBlock(v, k)).join("")}</section>` : "");
-    const phs = w.photos.length ? `<section class="case-photos">${w.photos.map((p, k) => `<button class="cph" type="button" data-p="${k}"><img src="${esc(p.src)}" alt="${esc(p.alt || "")}" loading="lazy"></button>`).join("")}</section>` : "";
+      (loops.length ? srcBar(loops[0][0].srcInfo) + `<section class="case-loops">${loops.map(([v, k]) => videoBlock(v, k)).join("")}</section>` : "");
+    // Fotos nach Original-Post gruppiert, jede Gruppe mit Account-Leiste darüber
+    const groups = [];
+    w.photos.forEach((p, k) => {
+      const key = p.srcInfo?.post || "";
+      const last = groups[groups.length - 1];
+      if (last && last.key === key) last.items.push([p, k]); else groups.push({ key, si: p.srcInfo, items: [[p, k]] });
+    });
+    const phs = groups.map((g) => `<div class="case-group">${srcBar(g.si)}<section class="case-photos">${g.items.map(([p, k]) =>
+      `<button class="cph" type="button" data-p="${k}"${g.si?.post ? ` title="Doppelklick: Original-Post öffnen"` : ""}><img src="${esc(p.src)}" alt="${esc(p.alt || "")}" loading="lazy"></button>`).join("")}</section></div>`).join("");
     caseIn.innerHTML = `
       <div class="case-bar">
         <button class="case-back mono" type="button">← Zurück</button>
@@ -149,7 +201,21 @@
     if (m) { if (caseOpen?.id !== m[1]) { const w = byId(m[1]); if (w) window.FX ? window.FX.wipe(() => showCase(w)) : showCase(w); } }
     else if (caseOpen) { casePushed = false; window.FX ? window.FX.wipe(hideCase) : hideCase(); }
   });
+  // Einfachklick = groß ansehen / abspielen, Doppelklick = Original-Post öffnen
+  let clickTimer = null;
+  const openPost = (si) => { if (si?.post) { window.open(si.post, "_blank", "noopener"); S.tick(1.5); } };
   caseEl.addEventListener("click", (e) => {
+    const media = e.target.closest(".cph, .cv-play");
+    if (media && !e.target.closest("a")) {
+      const si = media.classList.contains("cph") ? caseOpen.photos[+media.dataset.p].srcInfo : caseOpen.videos[+media.dataset.v].srcInfo;
+      if (e.detail >= 2 || clickTimer) { clearTimeout(clickTimer); clickTimer = null; return openPost(si); }
+      if (si?.post) { clickTimer = setTimeout(() => { clickTimer = null; handleCaseClick(media); }, 260); return; }
+      return handleCaseClick(media);
+    }
+    handleCaseClick(e.target);
+  });
+  function handleCaseClick(target) {
+    const e = { target };
     if (e.target.closest(".case-back")) return closeCase();
     const nx = e.target.closest(".case-next");
     if (nx) { const w = byId(nx.dataset.next); history.replaceState(null, "", "#p/" + w.id); S.whoosh(true); return window.FX ? window.FX.wipe(() => showCase(w)) : showCase(w); }
@@ -158,16 +224,16 @@
     const pl = e.target.closest(".cv-play");
     if (pl) {
       const v = caseOpen.videos[+pl.dataset.v];
-      if (v.video.ig) return open([{ video: v.video, vertical: v.vertical, caption: caseOpen.title }], 0); // Instagram lieber im Vollbild
+      if (v.video.ig) return open([{ video: v.video, vertical: v.vertical, caption: caseOpen.title, srcInfo: v.srcInfo }], 0); // Instagram lieber im Vollbild
       if (v.loop) { // Loop-Clips: groß mit Ton, alle Clips des Projekts durchblätterbar
-        const loops = caseOpen.videos.filter((x) => x.loop).map((x) => ({ video: x.video, vertical: x.vertical, caption: caseOpen.title }));
+        const loops = caseOpen.videos.filter((x) => x.loop).map((x) => ({ video: x.video, vertical: x.vertical, caption: caseOpen.title, srcInfo: x.srcInfo }));
         return open(loops, caseOpen.videos.filter((x) => x.loop).indexOf(v));
       }
       const frame = document.createElement("div");
-      frame.className = "cv-frame"; frame.innerHTML = player(v.video);
+      frame.className = "cv-frame"; frame.style.aspectRatio = pl.style.aspectRatio || ""; frame.innerHTML = player(v.video);
       pl.replaceWith(frame); S.tick(1.2);
     }
-  });
+  }
   addEventListener("keydown", (e) => { if (e.key === "Escape" && caseOpen && lb.hidden) closeCase(); });
   // Direktlink #p/<id> beim Laden
   { const m = location.hash.match(/^#p\/([\w-]+)/); if (m && byId(m[1])) showCase(byId(m[1])); }
@@ -219,8 +285,10 @@
 
   /* ── Foto ── */
   // alle Fotos aller Projekte, abwechselnd gemischt (damit nicht ein Projekt die Galerie füllt)
-  const photos = [];
-  for (let i = 0, max = Math.max(0, ...WORKS.map((w) => w.photos.length)); i < max; i++) WORKS.forEach((w) => w.photos[i] && photos.push(w.photos[i]));
+  // (ein Foto, das in mehreren Projekten steckt, erscheint hier nur einmal)
+  const photos = [], seenPh = new Set();
+  for (let i = 0, max = Math.max(0, ...WORKS.map((w) => w.photos.length)); i < max; i++)
+    WORKS.forEach((w) => { const p = w.photos[i]; if (p && !seenPh.has(p.src)) { seenPh.add(p.src); photos.push(p); } });
   const cats = [...new Set(photos.map((p) => p.cat).filter(Boolean))];
   const fEl = $("#photo-filters");
   fEl.innerHTML = cats.length > 1 ? ["Alle", ...cats].map((c, i) => `<button class="chip${i ? "" : " is-active"}" data-cat="${i ? esc(c) : ""}">${esc(c)}</button>`).join("") : "";

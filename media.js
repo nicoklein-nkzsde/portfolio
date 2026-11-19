@@ -24,6 +24,29 @@ window.SHOWREEL = {
   credit: "Soufian — Kompass · DoP",      // kleine Zeile unten rechts
 };
 
+/* ACCOUNTS — wer den Post hochgeladen hat (erscheint als Leiste über Fotos/Videos).
+   Bei Fotos/Videos: by = Account, post = Link zum Original-Post, with = Collab-Partner.
+   Steht by/post/with beim Projekt, gilt es für alle Fotos + kurzen Clips des Projekts.
+   Doppelklick auf ein Bild öffnet den Original-Post. */
+window.ACCOUNTS = {
+  soufian:      { name: "soufian", avatar: "media/avatars/soufian.jpg", verified: true },
+  alfrt:        { name: "alfrt.ben", avatar: "media/avatars/alfrt.ben.jpg" },
+  just1n:       { name: "just1n.wiens" },
+  n1coklein:    { name: "n1coklein", avatar: "media/avatars/n1coklein.jpg" },
+  kaizostudios: { name: "kaizostudios" },
+  hafty:        { name: "hafty_barbershop", avatar: "media/avatars/hafty_barbershop.jpg" },
+  haftys:       { name: "haftys_barber", avatar: "media/avatars/haftys_barber.jpg" },
+  family353:    { name: "family_barbershop_353" },
+  cutiq:        { name: "cutiq.ev", avatar: "media/avatars/cutiq.ev.jpg" },
+  trione:       { name: "trione.store", avatar: "media/avatars/trione.store.jpg" },
+  emirhansyz:   { name: "emirhansyz", avatar: "media/avatars/emirhansyz.jpg" },
+  wolftal:      { name: "schwarzwaldhaus_wolftal" },
+  sticker:      { name: "sticker.collective", avatar: "media/avatars/sticker.collective.jpg" },
+  hmra:         { name: "hmra_events" },
+  azzlackz:     { name: "Azzlackz", platform: "youtube", avatar: "media/avatars/yt-Azzlackz.jpg" },
+  nicokaizo:    { name: "Nicokaizo", platform: "youtube", avatar: "media/avatars/yt-Nicokaizo.jpg" },
+};
+
 window.WORKS = [
   {
     id: "soufian",
@@ -31,7 +54,8 @@ window.WORKS = [
     type: "Album-Trailer · DoP",
     badge: "250K+ Views",
     cat: "BTS",
-    videos: [{ src: "https://youtu.be/M5AAtJu4wNc" }],
+    by: "soufian", post: "https://www.instagram.com/p/DfSR-rxAiqh/",
+    videos: [{ src: "https://youtu.be/M5AAtJu4wNc", by: "azzlackz" }],
     photos: [
       { src: "photos/bts-soufian-1.jpg", alt: "Nico zeigt Soufian den Monitor am Set" },
       { src: "photos/bts-soufian-2.jpg", alt: "Nico an der Kamera mit Soufian am Set" },
@@ -42,6 +66,7 @@ window.WORKS = [
     title: "Hochzeit — Die Jungs",
     type: "Fotografie · Schwarz-Weiß",
     cat: "Hochzeit",
+    by: "alfrt", with: ["just1n"], post: "https://www.instagram.com/p/DdTt05OjYBU/",
     photos: [
       { src: "photos/hochzeit-1.jpg", alt: "Bräutigam mit seinen Freunden" },
       { src: "photos/hochzeit-2.jpg", alt: "Bräutigam und Freunde sitzend" },
@@ -53,7 +78,21 @@ window.WORKS = [
     title: "Cinematic",
     type: "Solo-Film · Kamera, Regie & Schauspiel",
     badge: "Nur natürliches Licht",
-    videos: [{ src: "https://youtu.be/vBig1kVT0Qw" }],
+    videos: [{ src: "https://youtu.be/vBig1kVT0Qw", by: "nicokaizo" }],
+  },
+  {
+    id: "bosbach",
+    title: "Heinz Bosbach — Cyprus",
+    type: "Dokumentation · Sony FX3",
+    badge: "4K",
+    cat: "BTS",
+    by: "n1coklein", with: ["kaizostudios"], post: "https://www.instagram.com/p/DbI-NRsjdNO/",
+    videos: [
+      { src: "https://youtu.be/OVsVChVri2Q", by: "nicokaizo" },
+      { src: "media/bts-clip-2.mp4", loop: true, vertical: true, ratio: "3/4" },  // BTS Bosbach Consulting
+    ],
+    // BTS vom Bosbach-Set (stehen zusätzlich auch im Projekt "Behind the Scenes")
+    photos: [{ src: "photos/bts-1.jpg", alt: "Interview-Set mit Heinz Bosbach in einer Industriehalle" }],
   },
   {
     id: "novotech",
@@ -72,6 +111,7 @@ window.WORKS = [
     // Film = Mitarbeit -> wird in der Projektseite klar so markiert
     videos: [{
       src: "https://youtu.be/cfSJ8Xp8BHE",
+      by: "nicokaizo",
       label: "Imagefilm",
       mitarbeit: true,
       note: "Mitarbeit: Unterstützung am Set, Licht & Aufbau. Die Hauptarbeit bei diesem Film hat mein Kollege gemacht – ich habe ihn unterstützt. Die Fotos oben sind von mir.",
@@ -83,8 +123,8 @@ window.WORKS = [
     title: "Hafty Barbershop",
     type: "Reels · Opening-Film & Barber bei der Arbeit",
     videos: [
-      { src: "https://www.instagram.com/reel/Df5Sz31glAL/", poster: "media/hafty-opening.jpg", vertical: true, label: "Opening" },
-      { src: "https://www.instagram.com/reel/DZ0dgrLRwWG/", poster: "media/hafty-barber.jpg", vertical: true, label: "Behind the Chair" },
+      { src: "https://www.instagram.com/reel/Df5Sz31glAL/", poster: "media/hafty-opening.jpg", vertical: true, label: "Opening", by: "hafty", with: ["haftys"] },
+      { src: "https://www.instagram.com/reel/DZ0dgrLRwWG/", poster: "media/hafty-barber.jpg", vertical: true, label: "Behind the Chair", by: "haftys", with: ["family353"] },
     ],
   },
   {
@@ -93,6 +133,7 @@ window.WORKS = [
     type: "Produkt · Handgemachte Baby- & Kinderkleidung",
     client: "cutiq.ev",
     cat: "Produkt",
+    by: "cutiq", with: ["n1coklein"], post: "https://www.instagram.com/p/DZDpnRaCLrV/",
     photos: [
       { src: "photos/cutiq-1.jpg", alt: "Handgemachtes Kinderkleid mit Anhänger" },
       { src: "photos/cutiq-4.jpg", alt: "Marktstand von cutiq mit Kinderkleidung" },
@@ -108,8 +149,9 @@ window.WORKS = [
     client: "trione.store",
     cat: "Event",
     cover: "photos/trione-1.jpg",
+    by: "trione", post: "https://www.instagram.com/p/Df0FfYQjbzF/",
     videos: [
-      { src: "media/trione-reel.mp4", poster: "media/trione-reel.jpg", vertical: true, label: "Reel" },
+      { src: "media/trione-reel.mp4", poster: "media/trione-reel.jpg", vertical: true, label: "Reel", by: "trione", post: "https://www.instagram.com/reel/Dfr1x4-Nd6U/" },
       { src: "media/trione-clip-1.mp4", loop: true, vertical: true, ratio: "4/5" },
       { src: "media/trione-clip-2.mp4", loop: true, vertical: true, ratio: "4/5" },
       { src: "media/trione-clip-3.mp4", loop: true, vertical: true, ratio: "4/5" },
@@ -130,6 +172,7 @@ window.WORKS = [
     client: "Knumox · in Kooperation mit Ulja Komarija",
     badge: "Mai 2025",
     cat: "Event",
+    by: "n1coklein", post: "https://www.instagram.com/p/DbI8Y3kjVoX/",
     photos: [
       { src: "photos/kroatien-3.jpg", alt: "Olivenöl-Flasche mit Brot und Öl im Sonnenlicht" },
       { src: "photos/kroatien-1.jpg", alt: "Geschenkbox mit drei Olivenöl-Flaschen" },
@@ -144,6 +187,7 @@ window.WORKS = [
     type: "BTS · Fotos & Clips von meinen Sets",
     cat: "BTS",
     cover: "photos/bts-1.jpg",
+    by: "n1coklein", with: ["kaizostudios"], post: "https://www.instagram.com/p/DbI-NRsjdNO/",
     photos: [
       { src: "photos/bts-1.jpg", alt: "Interview-Set in einer Industriehalle" },
       { src: "photos/bts-2.jpg", alt: "Cinema-Kamera-Rig mit Monitor" },
@@ -168,13 +212,13 @@ window.WORKS = [
     id: "schwarzwald",
     title: "Schwarzwald — Emirhansyz",
     type: "Kooperation · Schwarzwaldhaus Wolftal",
-    videos: [{ src: "https://www.instagram.com/p/DfK29musKGC/", poster: "media/wolftal.jpg" }],
+    videos: [{ src: "https://www.instagram.com/p/DfK29musKGC/", poster: "media/wolftal.jpg", by: "emirhansyz", with: ["wolftal"] }],
   },
   {
     id: "sticker",
     title: "Sticker Collective — Rave Recap",
     type: "Aftermovie · Werbung",
-    videos: [{ src: "https://www.instagram.com/p/Dc1KxHmNHCh/", poster: "media/sticker-rave.jpg", vertical: true }],
+    videos: [{ src: "https://www.instagram.com/p/Dc1KxHmNHCh/", poster: "media/sticker-rave.jpg", vertical: true, by: "sticker", with: ["hmra"] }],
   },
 ];
 
