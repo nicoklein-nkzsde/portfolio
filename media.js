@@ -82,17 +82,23 @@ window.WORKS = [
   },
   {
     id: "bosbach",
-    title: "Heinz Bosbach — Cyprus",
-    type: "Dokumentation · Sony FX3",
+    title: "Heinz Bosbach — Dokumentation",
+    type: "Dokumentation · Kamera & Color · Sony FX3",
     badge: "4K",
-    cat: "BTS",
-    by: "n1coklein", with: ["kaizostudios"], post: "https://www.instagram.com/p/DbI-NRsjdNO/",
+    cat: "Doku",
+    cover: "photos/bosbach-doku-2.jpg",
     videos: [
-      { src: "https://youtu.be/OVsVChVri2Q", by: "nicokaizo" },
-      { src: "media/bts-clip-2.mp4", loop: true, vertical: true, ratio: "3/4" },  // BTS Bosbach Consulting
+      { src: "https://youtu.be/OVsVChVri2Q", by: "nicokaizo", label: "Cyprus" },
+      { src: "media/bts-clip-2.mp4", loop: true, vertical: true, ratio: "3/4", by: "n1coklein", with: ["kaizostudios"], post: "https://www.instagram.com/p/DbI-NRsjdNO/" },  // BTS Bosbach Consulting
     ],
-    // BTS vom Bosbach-Set (stehen zusätzlich auch im Projekt "Behind the Scenes")
-    photos: [{ src: "photos/bts-1.jpg", alt: "Interview-Set mit Heinz Bosbach in einer Industriehalle" }],
+    photos: [
+      // Color-Grading-Standbilder aus der Doku
+      { src: "photos/bosbach-doku-2.jpg", alt: "Interview-Standbild, Color Grading" },
+      { src: "photos/bosbach-doku-1.jpg", alt: "Interview-Standbild im Wohnzimmer, Color Grading" },
+      { src: "photos/bosbach-doku-3.jpg", alt: "Interview-Standbild im Sessel, Color Grading" },
+      // BTS vom Set (steht zusätzlich auch im Projekt "Behind the Scenes")
+      { src: "photos/bts-1.jpg", alt: "Interview-Set mit Heinz Bosbach in einer Industriehalle", cat: "BTS", by: "n1coklein", with: ["kaizostudios"], post: "https://www.instagram.com/p/DbI-NRsjdNO/" },
+    ],
   },
   {
     id: "novotech",
@@ -209,6 +215,55 @@ window.WORKS = [
     ],
   },
   {
+    id: "honey",
+    title: "HoneyDaBandit — Men in Black",
+    type: "Musikvideo · Release-Teaser",
+    badge: "April 2026",
+    videos: [{ src: "media/honey-mib.mp4", poster: "media/honey-mib.jpg", vertical: true, label: "MIB — Out Now" }],
+  },
+  {
+    id: "birkenmeier",
+    title: "Birkenmeier — Grünwand",
+    type: "Corporate · Fotografie",
+    badge: "Mai 2025",
+    cat: "Corporate",
+    cover: "photos/birkenmeier-7.jpg",
+    photos: [
+      { src: "photos/birkenmeier-7.jpg", alt: "Begrünte Fassade vor weißem Gebäude" },
+      { src: "photos/birkenmeier-6.jpg", alt: "Besucher vor der Grünwand" },
+      { src: "photos/birkenmeier-1.jpg", alt: "Blaue Blüte vor der Grünwand" },
+      { src: "photos/birkenmeier-3.jpg", alt: "Gruppe bei der Besichtigung" },
+      { src: "photos/birkenmeier-5.jpg", alt: "Lachender Teilnehmer bei der Besichtigung" },
+      { src: "photos/birkenmeier-2.jpg", alt: "Gruppe auf einer Wiese" },
+      { src: "photos/birkenmeier-4.jpg", alt: "Gespräch im Garten" },
+    ],
+  },
+  {
+    id: "hainmueller",
+    title: "Hainmüller",
+    type: "Social Media · Fotografie",
+    badge: "Juli 2025",
+    cat: "Architektur",
+    cover: "photos/hainmueller-3.jpg",
+    photos: [
+      { src: "photos/hainmueller-3.jpg", alt: "Weißer Pavillon mit Holzdeck im Garten" },
+      { src: "photos/hainmueller-2.jpg", alt: "Outdoor-Küche mit Edelstahlgrill" },
+      { src: "photos/hainmueller-5.jpg", alt: "Pavillon mit Außendusche" },
+      { src: "photos/hainmueller-4.jpg", alt: "Außendusche aus Beton" },
+      { src: "photos/hainmueller-1.jpg", alt: "Detail eines Edelstahlgrills" },
+    ],
+  },
+  {
+    id: "salomon",
+    title: "Salomon",
+    type: "Produkt · Outdoor-Schuhe",
+    cat: "Produkt",
+    photos: [
+      { src: "photos/salomon-1.jpg", alt: "Salomon-Schuh im Gras" },
+      { src: "photos/salomon-2.jpg", alt: "Salomon-Schuhe beim Wandern" },
+    ],
+  },
+  {
     id: "schwarzwald",
     title: "Schwarzwald — Emirhansyz",
     type: "Kooperation · Schwarzwaldhaus Wolftal",
@@ -221,6 +276,33 @@ window.WORKS = [
     videos: [{ src: "https://www.instagram.com/p/Dc1KxHmNHCh/", poster: "media/sticker-rave.jpg", vertical: true, by: "sticker", with: ["hmra"] }],
   },
 ];
+
+/* WER BIN ICH — eigene Seite (Link: …/portfolio/#p/ueber, oben im Menü "Über")
+   text = Absätze. Einfach umschreiben/ergänzen. */
+window.ABOUT = {
+  kicker: "Wer bin ich",
+  name: "Nico Klein",
+  aka: "aka KaizoStudios",
+  text: [
+    "Ich bin Nico – Fotograf und Videograf aus Gießen. Unter dem Namen KaizoStudios fotografiere und filme ich zwischen Gießen und Frankfurt für Artists, Marken und Events.",
+    "Meine Arbeit reicht vom Album-Trailer für Soufian über Dokumentationen bis zu Produkt-, Event- und Corporate-Fotografie. Bei Knumox habe ich als Videograf mit Schwerpunkt Fotografie gearbeitet – heute bin ich mit KaizoStudios selbst unterwegs.",
+  ],
+  facts: [
+    ["Basis", "Gießen / Frankfurt"],
+    ["Fokus", "Foto & Film"],
+    ["Referenz", "Soufian — Kompass · 250K+ Views"],
+    ["Kamera", "Sony FX3 · Sony a7 IV"],
+  ],
+  photos: [
+    { src: "photos/nico-1.jpg", alt: "Nico mit Kamera" },
+    { src: "photos/nico-7.jpg", alt: "Nico im Profil, schwarz-weiß" },
+    { src: "photos/nico-2.jpg", alt: "Nico mit Kamera, schwarz-weiß" },
+    { src: "photos/nico-6.jpg", alt: "Nico mit Kamera im Innenhof" },
+    { src: "photos/nico-3.jpg", alt: "Nachtdreh auf dem Zebrastreifen" },
+    { src: "photos/nico-5.jpg", alt: "Nico von oben mit Kamera" },
+    { src: "photos/nico-4.jpg", alt: "Nico mit Gimbal in der Nacht" },
+  ],
+};
 
 /* MITARBEIT — Projekte, bei denen du nur geholfen hast.
    Erscheinen zusätzlich ganz unten im eigenen Bereich, klar mit deiner Rolle markiert. */

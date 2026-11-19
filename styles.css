@@ -267,6 +267,23 @@ main{padding:0 var(--pad)}
 .cn-title{font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:900;text-transform:uppercase;font-size:clamp(26px,5vw,80px);line-height:.95;transition:font-weight .55s var(--ease)}
 .case-next:hover .cn-title{font-weight:200}
 
+/* ═════════ WER BIN ICH ═════════ */
+.about-wrap{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:clamp(24px,5vw,80px);align-items:end;padding:clamp(30px,8vh,90px) 0 clamp(40px,8vh,80px)}
+.about-lead{aspect-ratio:2/3;overflow:hidden;background:var(--tile)}
+.about-lead img{width:100%;height:100%;object-fit:cover}
+.about-text{display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.about-aka{color:var(--t2);margin-top:-6px}
+.about-p{font-size:clamp(16px,1.35vw,19px);line-height:1.65;color:var(--t2);max-width:56ch}
+.about-p:first-of-type{color:var(--t1)}
+.about-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 28px;width:100%;max-width:560px;padding-top:18px;border-top:1px solid var(--line)}
+.about-facts dt{color:var(--t3);margin-bottom:4px}
+.about-facts dd{font-size:15px}
+.about-cta{margin-top:6px;font-family:'Archivo',sans-serif;font-stretch:125%;font-weight:800;text-transform:uppercase;font-size:clamp(16px,1.6vw,22px);border-bottom:2px solid var(--t1);padding-bottom:4px;transition:font-weight .5s var(--ease)}
+.about-cta:hover{font-weight:300}
+.about-photos{columns:3 260px}
+.case:not([hidden]) .about-wrap{animation:caseIn 1s var(--ease) both}
+@media (max-width:760px){.about-wrap{grid-template-columns:1fr;align-items:start}.about-lead{aspect-ratio:4/5}}
+
 /* ═════════ ACCOUNT-LEISTE (Instagram / YouTube) ═════════ */
 .src-bar{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;padding:10px 0 12px;font-size:14px}
 .src-acc{display:flex;align-items:center;gap:10px;color:var(--t1)}

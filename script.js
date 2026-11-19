@@ -113,7 +113,11 @@
     const cover = w.cover || videos[0]?.poster || photos[0]?.src || "";
     return { ...w, videos, photos, cover };
   });
-  const byId = (id) => WORKS.find((w) => w.id === id);
+  // "Wer bin ich" läuft als besondere Projektseite (#p/ueber), taucht aber nicht im Grid/Wheel auf
+  const A = window.ABOUT;
+  const ABOUT_W = A ? { id: "ueber", about: true, title: A.name, videos: [], cover: A.photos?.[0]?.src,
+    photos: (A.photos || []).map((p) => ({ ...p, caption: A.name, work: "ueber", srcInfo: null })) } : null;
+  const byId = (id) => WORKS.find((w) => w.id === id) || (id === "ueber" ? ABOUT_W : undefined);
 
   /* ── Projektseite ── */
   const caseEl = $("#case"), caseIn = $("#case-inner");
@@ -147,7 +151,26 @@
       ${v.label || v.mitarbeit ? `<figcaption class="cv-cap">${v.mitarbeit ? `<span class="cv-tag mono">Mitarbeit</span>` : ""}${v.label ? `<span class="mono">${esc(v.label)}</span>` : ""}</figcaption>` : ""}
       ${v.note ? `<p class="cv-note">${esc(v.note)}</p>` : ""}
     </figure>`;
+  const renderAbout = (w) => {
+    const [lead, ...rest] = w.photos;
+    caseIn.innerHTML = `
+      <div class="case-bar"><button class="case-back mono" type="button">← Zurück</button><span class="mono case-count">Über</span></div>
+      <div class="about-wrap">
+        ${lead ? `<button class="cph about-lead" type="button" data-p="0"><img src="${esc(lead.src)}" alt="${esc(lead.alt || "")}"></button>` : ""}
+        <div class="about-text">
+          <p class="mono">${esc(A.kicker || "")}</p>
+          <h2 class="case-title">${esc(A.name)}</h2>
+          ${A.aka ? `<p class="about-aka mono">${esc(A.aka)}</p>` : ""}
+          ${(A.text || []).map((t) => `<p class="about-p">${esc(t)}</p>`).join("")}
+          ${A.facts?.length ? `<dl class="about-facts">${A.facts.map(([k, v]) => `<div><dt class="mono">${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("")}</dl>` : ""}
+          <a class="about-cta" href="mailto:nicoklein@nkzs.de">Projekt anfragen →</a>
+        </div>
+      </div>
+      ${rest.length ? `<section class="case-photos about-photos">${rest.map((p, k) => `<button class="cph" type="button" data-p="${k + 1}"><img src="${esc(p.src)}" alt="${esc(p.alt || "")}" loading="lazy"></button>`).join("")}</section>` : ""}
+      ${WORKS.length ? `<button class="case-next" type="button" data-next="${esc(WORKS[0].id)}"><span class="mono">Zur Arbeit</span><span class="cn-title">${esc(WORKS[0].title)} →</span></button>` : ""}`;
+  };
   const renderCase = (w) => {
+    if (w.about) return renderAbout(w);
     const i = WORKS.indexOf(w), next = WORKS[(i + 1) % WORKS.length];
     // Hauptvideos oben, kurze Loop-Clips darunter in eigenem Raster
     const mains = w.videos.map((v, k) => [v, k]).filter(([v]) => !v.loop), loops = w.videos.map((v, k) => [v, k]).filter(([v]) => v.loop);
