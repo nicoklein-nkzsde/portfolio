@@ -29,6 +29,11 @@ html:not(.is-loading):not(.is-loaded) .logo .lg-a,html:not(.is-loading):not(.is-
 .nav nav{display:flex;gap:clamp(16px,3vw,36px);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase}
 .nav nav a{opacity:.75;transition:opacity .2s}
 .nav nav a:hover{opacity:1}
+/* Handy: Menü kompakter, "Arbeiten" entfällt (liegt eh direkt unter dem Startbild) */
+@media (max-width:560px){
+  .nav nav{gap:16px;font-size:10px;letter-spacing:.16em}
+  .nav nav a[href="#work"]{display:none}
+}
 
 .nav nav{align-items:center}
 .snd{display:grid;place-items:center;width:28px;height:20px;opacity:.75;transition:opacity .2s}
@@ -47,6 +52,8 @@ html:not(.is-loading):not(.is-loaded) .logo .lg-a,html:not(.is-loading):not(.is-
   background:radial-gradient(80vw 60vh at 70% 20%,rgba(117,203,248,.10),transparent 60%),radial-gradient(60vw 60vh at 10% 90%,rgba(255,255,255,.05),transparent 60%),#050506}
 .hero-media video,.hero-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .hero-poster{filter:brightness(.55) saturate(.9);transform:scale(1.04)}
+.hero-vid{opacity:0;filter:brightness(.62) saturate(1.05);transform:scale(1.04);transition:opacity 1.4s ease}
+.hero-vid.on{opacity:1}
 /* YouTube als Cover: 16:9-Fläche, die immer den ganzen Bildschirm füllt */
 .hero-yt{position:absolute;top:50%;left:50%;width:max(100vw,177.78svh);height:max(56.25vw,100svh);transform:translate(-50%,-50%) scale(1.18);
   border:0;pointer-events:none;opacity:0;transition:opacity 1.6s ease;filter:brightness(.6) saturate(.95)}

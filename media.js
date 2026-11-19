@@ -19,7 +19,8 @@
    ───────────────────────────────────────────────────────────── */
 
 window.SHOWREEL = {
-  loop: "https://youtu.be/M5AAtJu4wNc",   // läuft stumm im Hintergrund (YouTube-Link oder mp4)
+  loop: "media/drone.mp4",                // läuft stumm im Hintergrund (mp4 oder YouTube-Link)
+  poster: "media/drone.jpg",              // Standbild, bis das Video läuft
   full: "https://youtu.be/M5AAtJu4wNc",   // öffnet sich beim Klick auf "Showreel"
   credit: "Soufian — Kompass · DoP",      // kleine Zeile unten rechts
 };

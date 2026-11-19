@@ -70,8 +70,12 @@
           src="https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&controls=0&disablekb=1&modestbranding=1&playsinline=1&rel=0&iv_load_policy=3"></iframe>`);
       const ifr = hm.querySelector("iframe");
       if (ifr) ifr.addEventListener("load", () => setTimeout(() => ifr.classList.add("on"), 1200));
-    } else if (loopV.file && !reduced) {
-      hm.innerHTML = `<video src="${esc(loopV.file)}" autoplay muted loop playsinline></video>`;
+    } else if (loopV.file) {
+      // Standbild sofort, Video blendet weich darüber ein, sobald es läuft
+      hm.innerHTML = (reel.poster ? `<img class="hero-poster" src="${esc(reel.poster)}" alt="">` : "") + (reduced ? "" :
+        `<video class="hero-vid" src="${esc(loopV.file)}" autoplay muted loop playsinline preload="auto"${reel.poster ? ` poster="${esc(reel.poster)}"` : ""}></video>`);
+      const vid = hm.querySelector("video");
+      if (vid) vid.addEventListener("playing", () => vid.classList.add("on"), { once: true });
     }
     hm.classList.add("has-media");
   }
