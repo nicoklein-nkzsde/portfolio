@@ -89,6 +89,7 @@ window.WORKS = [
     cover: "photos/bosbach-doku-2.jpg",
     videos: [
       { src: "https://youtu.be/OVsVChVri2Q", by: "nicokaizo", label: "Cyprus" },
+      { src: "media/bosbach-immo.mp4", poster: "media/bosbach-immo.jpg", label: "Bosbach Immo" },
       { src: "media/bts-clip-2.mp4", loop: true, vertical: true, ratio: "3/4", by: "n1coklein", with: ["kaizostudios"], post: "https://www.instagram.com/p/DbI-NRsjdNO/" },  // BTS Bosbach Consulting
     ],
     photos: [
@@ -220,6 +221,24 @@ window.WORKS = [
     type: "Musikvideo · Release-Teaser",
     badge: "April 2026",
     videos: [{ src: "media/honey-mib.mp4", poster: "media/honey-mib.jpg", vertical: true, label: "MIB — Out Now" }],
+  },
+  {
+    id: "paris",
+    title: "Paris",
+    type: "Travel · Cinematic Vlog",
+    videos: [{ src: "media/paris.mp4", poster: "media/paris.jpg" }],
+  },
+  {
+    id: "david",
+    title: "David Gartenbau",
+    type: "Werbeclip · 10 Sekunden",
+    videos: [{ src: "media/david-gartenbau.mp4", poster: "media/david-gartenbau.jpg" }],
+  },
+  {
+    id: "drohne",
+    title: "Golden Hour",
+    type: "Drohne · Cinematic",
+    videos: [{ src: "media/drone.mp4", poster: "media/drone.jpg" }],
   },
   {
     id: "birkenmeier",
